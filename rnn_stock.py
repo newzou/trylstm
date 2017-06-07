@@ -67,7 +67,7 @@ all_hidden_layers = tf.scan(run_rnn,
                             initializer=initial_hidden,
                             name="state")
 
-rnn_cell = tf.nn.rnn_cell.BasicRNNCell(hidden_layer_size)
+rnn_cell = tf.contrib.rnn.BasicRNNCell(hidden_layer_size)
 
 outputs, states = tf.nn.dynamic_rnn(rnn_cell, _inputs, dtype=tf.float32)
 
@@ -83,7 +83,7 @@ last_hidden_state = outputs[:,-1,:]
 output = get_linear_layer(last_hidden_state)
 
 cross_entropy = tf.reduce_mean(
-        tf.nn.softmax_cross_entropy_with_logits(output, y))
+        tf.nn.softmax_cross_entropy_with_logits(logits=output, labels=y))
 
 train_step = tf.train.RMSPropOptimizer(0.001,0.9).minimize(cross_entropy)
 
@@ -148,15 +148,6 @@ with tf.Session() as sess:
 
         print "step {}, training accuracy {}".format(i, train_accuracy)
  
-        sess.run(train_step,feed_dict={_inputs: batch_x, y: batch_y})
-
-    #X = mnist.test.images.reshape(10, 1000, 784)
-    #Y = mnist.test.labels.reshape(10, 1000, 10)
-
-    #test_accuracy = np.mean([sess.run(accuracy,
-#                              feed_dict={x: X[i], y: Y[i], keep_prob:1.0})
-#                              for i in range(10)])
-     
-#print "test accuracy: {}".format(test_accuracy)
-
+        _, c = sess.run([train_step, cross_entropy],feed_dict={_inputs: batch_x, y: batch_y})
+        print c
 
