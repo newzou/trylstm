@@ -42,7 +42,7 @@ n_iterations = 1000
 
 # get data
 DATA_DIR = './'
-daily_price = genfromtxt('IBM.csv', delimiter=',', skip_header=1)
+daily_price = genfromtxt('JNJ.csv', delimiter=',', skip_header=1)
 dt = daily_price[:,0:1]
 price = daily_price[:,5] # adjusted last price
 
